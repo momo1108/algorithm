@@ -6,39 +6,45 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BOJ2011 {
+public class BOJ2579 {
     // https://www.acmicpc.net/problem/
 
     // 변수 설정
     static FastReader fr = new FastReader();
-    static String pw;
-    static int[] Dy;
+    static int N;
+    static int[] score;
+    static int[][] Dy;
 
     // 입력 함수
     static void input(){
-        pw = fr.nextLine();
+        N = fr.nextInt();
+        score = new int[N+1];
+        Dy = new int[N+1][3];
+
+        for (int i = 1; i <= N; i++) {
+            score[i] = fr.nextInt();
+        }
     }
 
     static void dp(){
-        // Dy[i] : i 번째 글자까지 해석의 수
-        Dy = new int[5001];
+        // Dy[i] : i번째 계단에서 최대점수
+        // Dy[i][0~1] : i번재 계단 직전계단 밟은개수
+        // 초기값 : Dy[1~2][0~2]
+        Dy[1][0] = score[1];
+        Dy[1][1] = score[1];
+        if(N == 1) {
+            System.out.println(score[1]);
+            return;
+        }
+        Dy[2][0] = score[2];
+        Dy[2][1] = score[1] + score[2];
 
-        // 초기값
-        Dy[0] = 1; // 이건 2번째 글자에서 참조용
-        Dy[1] = pw.charAt(0) == '0' ? 0 : 1;
-
-        // 점화식 i번째까지 해석의 수
-        // : i번째 글자를 하나로 사용 하는 경우 +
-        //   i, i-1번째 글자를 하나로 사용하는 경우
-        int twoChar;
-        for (int i = 2; i <= pw.length(); i++) {
-            twoChar = Integer.parseInt(pw.substring(i-2, i));
-            if(pw.charAt(i-1) > '0') Dy[i] += Dy[i - 1]; // 한 글자로 사용
-            if(twoChar > 9 && twoChar < 27) Dy[i] += Dy[i - 2]; // 두 글자로 사용
-            Dy[i] %= 1000000;
+        for (int i = 3; i <= N; i++) {
+            Dy[i][0] = Math.max(Dy[i-2][0], Dy[i-2][1]) + score[i];
+            Dy[i][1] = Dy[i-1][0] + score[i];
         }
 
-        System.out.println(Dy[pw.length()]);
+        System.out.println(Math.max(Dy[N][0], Dy[N][1]));
     }
 
     public static void main(String[] args) throws Exception {
