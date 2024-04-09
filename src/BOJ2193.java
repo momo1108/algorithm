@@ -6,45 +6,28 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BOJ2156 {
+public class BOJ2193 {
     // https://www.acmicpc.net/problem/
 
     // 변수 설정
     static FastReader fr = new FastReader();
-    static int n;
-    static int[] wine;
-    static int[][] Dy;
-
-    // 입력 함수
-    static void input(){
-        n = fr.nextInt();
-        Dy = new int[n+1][3];
-        wine = new int[n+1];
-
-        for (int i = 1; i <= n; i++) {
-            wine[i] = fr.nextInt();
-        }
-    }
 
     static void dp(){
-        int answer = 0;
-        Dy[1][0] = wine[1];
-        Dy[1][1] = wine[1];
-        Dy[1][2] = 0;
+        int n = fr.nextInt();
+        long[][] Dy = new long[n+1][2];
+
+        Dy[1][0] = 0;
+        Dy[1][1] = 1;
 
         for (int i = 2; i <= n; i++) {
-            Dy[i][2] = answer;
-            Dy[i][0] = Math.max(Math.max(Dy[i-2][0], Dy[i-2][1]), Dy[i-1][2]) + wine[i];
-            Dy[i][1] = Dy[i-1][0] + wine[i];
-            answer = Math.max(Dy[i][0], answer);
-            answer = Math.max(Dy[i][1], answer);
+            Dy[i][0] = Dy[i-1][1] + Dy[i-1][0];
+            Dy[i][1] = Dy[i-1][0];
         }
 
-        System.out.println(n == 1? wine[1] : answer);
+        System.out.println(Dy[n][0] + Dy[n][1]);
     }
 
     public static void main(String[] args) throws Exception {
-        input();
         dp();
     }
 
