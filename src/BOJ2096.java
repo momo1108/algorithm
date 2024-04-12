@@ -6,47 +6,58 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
-public class BOJ1562 {
+public class BOJ2096 {
     // https://www.acmicpc.net/problem/
 
     // 변수 설정
     static FastReader fr = new FastReader();
+    static int N;
+    static int[][] map;
 
     // 입력 함수
+    static void input(){
+        N = fr.nextInt();
+        map = new int[N][3];
+
+        for (int i = 0; i < N; i++) {
+            map[i][0] = fr.nextInt();
+            map[i][1] = fr.nextInt();
+            map[i][2] = fr.nextInt();
+        }
+    }
+
     static void dp(){
-        int N = fr.nextInt();
-        long share = 1000000000;
-        // 자리수, 마지막 숫자, 최소값, 최대값
-        long[][][][] Dy = new long[N+1][10][10][10];
+        int[][][] Dy = new int[N][3][2];
+        // 행, 열, 최소/최대
+        for (int i = 0; i < 3; i++) {
+            Dy[0][i][0] = map[0][i];
+            Dy[0][i][1] = map[0][i];
+        }
 
-        for (int i = 1; i < 10; i++) Dy[1][i][i][i] = 1;
-
-        for (int len = 2; len <= N; len++) {
-            for (int prev = 0; prev < 10; prev++) {
-                for (int min = 0; min < 10; min++) {
-                    for (int max = min; max < 10; max++) {
-                        if(prev - 1 >= 0) {
-                            Dy[len][prev - 1][Math.min(prev - 1, min)][max] += Dy[len - 1][prev][min][max];
-                            Dy[len][prev - 1][Math.min(prev - 1, min)][max] %= share;
-                        }
-                        if(prev + 1 < 10) {
-                            Dy[len][prev + 1][min][Math.max(prev + 1, max)] += Dy[len - 1][prev][min][max];
-                            Dy[len][prev + 1][min][Math.max(prev + 1, max)] %= share;
-                        }
-                        
-                    }
+        for (int row = 1; row < N; row++) {
+            for (int col = 0; col < 3; col++) {
+                int min = 1000000, max = -1;
+                for(int prevCol : new int[]{col-1, col, col+1}){
+                    if(prevCol < 0 || prevCol > 2) continue;
+                    min = Math.min(min, Dy[row - 1][prevCol][0]);
+                    max = Math.max(max, Dy[row - 1][prevCol][1]);
                 }
+                Dy[row][col][0] = min + map[row][col];
+                Dy[row][col][1] = max + map[row][col];
             }
         }
 
-        long answer = 0;
-        for (int i = 0; i < 10; i++) {
-            answer += Dy[N][i][0][9];
+        int min = 1000000, max = -1;
+        for (int i = 0; i < 3; i++) {
+            min = Math.min(min, Dy[N-1][i][0]);
+            max = Math.max(max, Dy[N-1][i][1]);
         }
-        System.out.println(answer % share);
+
+        System.out.println(max + " " + min);
     }
 
     public static void main(String[] args) throws Exception {
+        input();
         dp();
     }
 
