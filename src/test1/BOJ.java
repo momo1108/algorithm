@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
 public class BOJ {
-    // https://www.acmicpc.net/problem/
+    // https://www.acmicpc.net/workbook/view/7942
 
     // 변수 설정
     static FastReader fr = new FastReader();
