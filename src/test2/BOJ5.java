@@ -6,78 +6,59 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class BOJ4 {
+public class BOJ5 {
     // https://www.acmicpc.net/workbook/view/7976
 
     // 변수 설정
     static FastReader fr = new FastReader();
-    static int N, M, K, MAX = 9999999;
-    static int[] C;
-    static int[][] D;
+    static String S;
+    static int M;
+    static Word[] W;
+    static class Word{
+        String word;
+        int score;
 
-    // 입력 함수
-    static void input(){
-        N = fr.nextInt();
-        M = fr.nextInt();
-        D = new int[N + 1][N + 1];
-
-        for (int i = 0; i <= N; i++) {
-            for (int j = 0; j <= N; j++) {
-                D[i][j] = MAX;
-            }
-            D[i][i] = 0;
-        }
-
-        for (int i = 0; i < M; i++) {
-            D[fr.nextInt()][fr.nextInt()] = fr.nextInt();
-        }
-
-        K = fr.nextInt();
-        C = new int[K];
-
-        for (int i = 0; i < K; i++) {
-            C[i] = fr.nextInt();
+        public Word(String w, int s){
+            this.word = w;
+            this.score = s;
         }
     }
 
-    static void fw(){
-        for (int i = 1; i <= N; i++) {
-            for (int j = 1; j <= N; j++) {
-                if(j == i)continue;
-                for (int k = 1; k <= N; k++) {
-                    if(k == i || k == j) continue;
-                    D[j][k] = Math.min(D[j][k], D[j][i] + D[i][k]);
-                }
-            }
-        }
+    // 입력 함수
+    static void input(){
+        S = fr.nextLine();
+        M = fr.nextInt();
+        W = new Word[M];
 
-        int min = MAX;
-        ArrayList<Integer> answer = new ArrayList<>();
-        for (int i = 1; i <= N; i++) {
-            int max = -1;
-            for(int c : C){
-                max = Math.max(max, D[c][i] + D[i][c]);
-            }
-            if(max < min) {
-                min = max;
-                answer.clear();
-                answer.add(i);
-            } else if(max == min){
-                answer.add(i);
+        String line;
+        String[] sl;
+        for (int i = 0; i < M; i++) {
+            line = fr.nextLine();
+            sl = line.split(" ");
+            W[i] = new Word(sl[0], Integer.parseInt(sl[1]));
+        }
+    }
+    
+    static void dp(){
+        int[] Dy = new int[S.length() + 1];
+
+        for (int i = 1; i <= S.length(); i++) {
+            Dy[i] = Math.max(Dy[i - 1] + 1, Dy[i]);
+
+            for(Word w : W){
+                int wordEnd = i + w.word.length() - 1;
+                if(wordEnd > S.length()) continue;
+                if(w.word.equals(S.substring(i - 1, wordEnd))) Dy[wordEnd] = Math.max(Dy[wordEnd], Dy[i - 1] + w.score);
             }
         }
-        
-        StringBuilder sb = new StringBuilder();
-        for(Integer c : answer) sb.append(c).append(' ');
-        System.out.println(sb);
+        System.out.println(Dy[S.length()]);
     }
 
     public static void main(String[] args) throws Exception {
         input();
-        fw();
+        dp();
     }
 
     static class FastReader {
