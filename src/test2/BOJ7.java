@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class BOJ7 {
@@ -15,6 +16,7 @@ public class BOJ7 {
     static FastReader fr = new FastReader();
     static int N, P, Q, answer = 0;
     static int[] X;
+    static ArrayList<Integer>[] groups;
 
     // 입력 함수
     static void input(){
@@ -27,10 +29,38 @@ public class BOJ7 {
 
         P = fr.nextInt();
         Q = fr.nextInt();
+
+        groups = new ArrayList[Q + 1];
+        for (int i = 0; i < Q + 1; i++) {
+            groups[i] = new ArrayList<>();
+        }
+    }
+
+    static void check(){
+        int result = 1;
+        for(ArrayList<Integer> group : groups){
+            if(group.isEmpty()) return;
+            result *= group.stream().reduce(0, (a, b)->a+b);
+        }
+        answer = Math.max(answer, result);
+    }
+
+    static void rec(int index){
+        if(index == N) {
+            check();
+            return;
+        }
+        for (int group = 0; group < groups.length; group++) {
+            groups[group].add(X[index]);
+            rec(index + 1);
+            groups[group].remove(groups[group].size() - 1);
+        }
     }
 
     public static void main(String[] args) throws Exception {
         input();
+        rec(0);
+        System.out.println(answer);
     }
 
     static class FastReader {
