@@ -10,21 +10,39 @@ for _ in range(M):
     lines.append([int(_) for _ in input().split()])
 
 
-def binarySearch(arr, value):
+# minmax - 0 : min, 1 : max
+def binarySearch(arr, value, minmax):
     left, right = 0, len(arr) - 1
     mid = (left + right) // 2
+    answer = -1
 
+    # 유효한 위치면 정답 갱신 후 범위를 좁혀나간다.
     while left <= right:
         mid = (left + right) // 2
-        if arr[mid] == value:
-            return mid
-        elif arr[mid] > value:
-            right = mid - 1
+        if minmax:
+            if arr[mid] <= value:
+                answer = mid
+                left = mid + 1
+            else:
+                right = mid - 1
         else:
-            left = mid + 1
+            if arr[mid] >= value:
+                answer = mid
+                right = mid - 1
+            else:
+                left = mid + 1
 
-    return mid
+    return answer
 
-// 하한점을 찾는다면 결과를 그대로 최소 인덱스로 사용가능
-// 상한점을 찾는다면 결과가 똑같은 수가 아닐 시 -1 해야함
-print(binarySearch(spots, 0))
+
+answer = []
+for line in lines:
+    minIndex, maxIndex = binarySearch(spots, min(line), 0), binarySearch(
+        spots, max(line), 1
+    )
+    if minIndex == -1 or maxIndex == -1:
+        answer.append("0")
+    else:
+        answer.append(str(maxIndex - minIndex + 1))
+
+print("\n".join(answer))
