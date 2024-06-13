@@ -43,9 +43,11 @@ dfs1(1)
 재귀함수를 이용한 구현
 - 파이썬의 경우 재귀의 깊이가 1000번으로 제한이 되어있다.
 더 깊은 재귀가 필요하면 다음과 같은 모듈이 필요하다.
-from sys import setrecursionlimit
-setrecursionlimit(10 ** 6)
 """
+from sys import setrecursionlimit
+
+setrecursionlimit(10**6)
+
 visited = [False] * (n + 1)
 
 
