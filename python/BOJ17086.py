@@ -39,6 +39,9 @@ def checkDistance(r, c):
             q.append((cr + dr, cc + dc, cd + 1))
 
 
+"""
+상어가 있는 타일의 경우 bfs 로 모든 거리를 체크한다.
+"""
 for r in range(N):
     for c in range(M):
         if sharkMap[r][c]:

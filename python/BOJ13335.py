@@ -12,10 +12,16 @@ time = 1
 
 
 def getCurrentL():
+    """
+    현재 다리 위의 무게를 출력합니다.
+    """
     return sum([t[0] for t in onBridge])
 
 
 def moveTrucksOnBridge():
+    """
+    다리 위의 트럭을 한번 움직인다.
+    """
     for i in range(len(onBridge)):
         onBridge[i][1] -= 1
     if onBridge[0][1] <= 0:
