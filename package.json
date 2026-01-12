@@ -1,0 +1,23 @@
+{
+  "name": "algorithm",
+  "version": "1.0.0",
+  "description": "Repository for studying algorithm - with \"boilerplate code generator\" script to simplify",
+  "scripts": {
+    "java": "node main.js java",
+    "js": "node main.js js",
+    "python": "node main.js python"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/momo1108/algorithm.git"
+  },
+  "keywords": [
+    "algorithm"
+  ],
+  "author": "momo1108",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/momo1108/algorithm/issues"
+  },
+  "homepage": "https://github.com/momo1108/algorithm#readme"
+}
