@@ -1,6 +1,42 @@
 const fs = require("fs");
 const path = require("path");
 
+const usageMessage = `Usage: npm run <java | python | js> <platform> <problem_number>`;
+
+const lang = process.argv[2].toLowerCase();
+
+if (!lang || !["java", "python", "js"].includes(lang)) {
+  console.log("Please provide a valid language: java, python, or js");
+  console.log(usageMessage);
+  process.exit(1);
+}
+
+const algoPlatform = process.argv[3].toUpperCase();
+if (
+  !algoPlatform ||
+  !["BOJ", "LEETCODE", "PROGRAMMERS"].includes(algoPlatform)
+) {
+  console.log(
+    "Please provide the name of website platform (e.g., BOJ, LeetCode, Programmers - ignore case)."
+  );
+  console.log(usageMessage);
+  process.exit(1);
+}
+
+const pNum = parseInt(process.argv[4]);
+if (!pNum || isNaN(pNum)) {
+  console.log("Please provide the problem number.");
+  console.log(usageMessage);
+  process.exit(1);
+}
+
+const fileName = `${algoPlatform}${pNum}.${lang}`;
+const filePath = `${path.join(__dirname, lang)}/${fileName}`;
+
+const JS_BOILERPLATE = `const filePath = process.platform === "linux" ? "/dev/stdin" : "${path.join(__dirname, "data").replaceAll("\\", "/")}/${algoPlatform}${pNum}.txt";
+let input = require("fs").readFileSync(filePath).toString().trim().split("\\n");
+`;
+
 const JAVA_BOILERPLATE = `import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -78,55 +114,32 @@ input = sys.stdin.readline
 
 `;
 
-const JS_BOILERPLATE = `const filePath = process.platform === "linux" ? "/dev/stdin" : "./input.txt";
-let input = require("fs").readFileSync(filePath).toString().trim().split("\n");
-`;
+const boilerplateMap = {
+  'js': JS_BOILERPLATE,
+  'java': JAVA_BOILERPLATE,
+  'python': PYTHON_BOILERPLATE
+};
 
-const usageMessage = `Usage: npm run <java | python | js> <platform> <problem_number>`;
+const completeMessage = `${fileName} file has been created with ${lang} boilerplate code.`
 
-const lang = process.argv[2];
+try {
+  fs.accessSync(filePath, fs.constants.R_OK | fs.constants.W_OK);
+  console.log('File Already Exists!');
+  return;
+} catch (err) {
+  console.log('Creating New Files!');
 
-if (!lang || !["java", "python", "js"].includes(lang.toLowerCase())) {
-  console.log("Please provide a valid language: java, python, or js");
-  console.log(usageMessage);
-  process.exit(1);
-}
-
-const platform = process.argv[3];
-if (
-  !platform ||
-  !["BOJ", "LEETCODE", "PROGRAMMERS"].includes(platform.toUpperCase())
-) {
-  console.log(
-    "Please provide the platform name (e.g., BOJ, LeetCode, Programmers - ignore case)."
-  );
-  console.log(usageMessage);
-  process.exit(1);
-}
-
-const number = parseInt(process.argv[4]);
-if (!number || isNaN(number)) {
-  console.log("Please provide the problem number.");
-  console.log(usageMessage);
-  process.exit(1);
-}
-
-if (lang.toLowerCase() === "java") {
   fs.writeFileSync(
-    `${path.join(__dirname, "java")}/${process.argv[3]}${process.argv[4]}.java`,
-    JAVA_BOILERPLATE
+    filePath,
+    boilerplateMap[lang]
   );
-  console.log("BOJ.java file has been created with Java boilerplate code.");
-} else if (lang.toLowerCase() === "python") {
-  fs.writeFileSync(
-    `${path.join(__dirname, "python")}/${process.argv[3]}${process.argv[4]}.py`,
-    PYTHON_BOILERPLATE
-  );
-  console.log("BOJ.py file has been created with Python boilerplate code.");
-} else if (lang.toLowerCase() === "js") {
-  fs.writeFileSync(
-    `${path.join(__dirname, "js")}/${process.argv[3]}${process.argv[4]}.js`,
-    JS_BOILERPLATE
-  );
-  console.log("BOJ.js file has been created with JavaScript boilerplate code.");
+
+  if(lang === "js" && algoPlatform === "BOJ"){
+    fs.writeFileSync(
+      `${path.join(__dirname, "data")}/${algoPlatform}${pNum}.txt`,
+      ""
+    );
+  }
+  
+  console.log(completeMessage);
 }
