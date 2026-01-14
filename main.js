@@ -34,7 +34,7 @@ const fileName = `${algoPlatform}${pNum}.${lang}`;
 const filePath = `${path.join(__dirname, lang)}/${fileName}`;
 
 const JS_BOILERPLATE = `const filePath = process.platform === "linux" ? "/dev/stdin" : "${path.join(__dirname, "data").replaceAll("\\", "/")}/${algoPlatform}${pNum}.txt";
-let input = require("fs").readFileSync(filePath).toString().trim().split("\\n");
+let input = require("fs").readFileSync(filePath).toString().trim().split("\\n").map(line => line.trim());
 `;
 
 const JAVA_BOILERPLATE = `import java.io.BufferedReader;
