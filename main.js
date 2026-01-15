@@ -1,12 +1,12 @@
 const fs = require("fs");
 const path = require("path");
 
-const usageMessage = `Usage: npm run <java | python | js> <platform> <problem_number>`;
+const usageMessage = `Usage: npm run <java | py | js> <platform> <problem_number>`;
 
 const lang = process.argv[2].toLowerCase();
 
-if (!lang || !["java", "python", "js"].includes(lang)) {
-  console.log("Please provide a valid language: java, python, or js");
+if (!lang || !["java", "py", "js"].includes(lang)) {
+  console.log("Please provide a valid language: java, py, or js");
   console.log(usageMessage);
   process.exit(1);
 }
@@ -117,7 +117,7 @@ input = sys.stdin.readline
 const boilerplateMap = {
   'js': JS_BOILERPLATE,
   'java': JAVA_BOILERPLATE,
-  'python': PYTHON_BOILERPLATE
+  'py': PYTHON_BOILERPLATE
 };
 
 const completeMessage = `${fileName} file has been created with ${lang} boilerplate code.`

@@ -5,7 +5,7 @@
   "scripts": {
     "java": "node main.js java",
     "js": "node main.js js",
-    "python": "node main.js python"
+    "py": "node main.js py"
   },
   "repository": {
     "type": "git",
