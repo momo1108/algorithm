@@ -3,7 +3,7 @@ const path = require("path");
 
 const usageMessage = `Usage: npm run <java | py | js> <platform> <problem_number>`;
 
-const lang = process.argv[2].toLowerCase();
+const lang = process.argv[2]?.toLowerCase();
 
 if (!lang || !["java", "py", "js"].includes(lang)) {
   console.log("Please provide a valid language: java, py, or js");
@@ -11,7 +11,7 @@ if (!lang || !["java", "py", "js"].includes(lang)) {
   process.exit(1);
 }
 
-const algoPlatform = process.argv[3].toUpperCase();
+const algoPlatform = process.argv[3]?.toUpperCase();
 if (
   !algoPlatform ||
   !["BOJ", "LEETCODE", "PROGRAMMERS"].includes(algoPlatform)
