@@ -31,7 +31,8 @@ if (!pNum || isNaN(pNum)) {
 }
 
 const fileName = `${algoPlatform}${pNum}.${lang}`;
-const filePath = `${path.join(__dirname, lang)}/${fileName}`;
+const directoryPath = `${path.join(__dirname, lang)}/${algoPlatform}`;
+const filePath = `${directoryPath}/${fileName}`;
 
 const JS_BOILERPLATE = `const filePath = process.platform === "linux" ? "/dev/stdin" : "${path.join(__dirname, "data").replaceAll("\\", "/")}/${algoPlatform}${pNum}.txt";
 let input = require("fs").readFileSync(filePath).toString().trim().split("\\n").map(line => line.trim());
@@ -129,6 +130,10 @@ try {
 } catch (err) {
   console.log('Creating New Files!');
 
+  fs.mkdirSync(
+    directoryPath, 
+    { recursive: true }
+  );
   fs.writeFileSync(
     filePath,
     boilerplateMap[lang]
