@@ -7,13 +7,19 @@
 class Heap {
     /**
      * Heap 생성자
-     * @param {string} type - "MAX" (최대 힙) 또는 "MIN" (최소 힙), 기본값은 "MAX"
+     * @param {string} type - "MAX" (최대 힙) 또는 "MIN" (최소 힙), 혹은 "CUSTOM" (비교 함수 지정) 기본값은 "MAX"
+     * @param {function} comparator - (a, b) => b 가 a 보다 우선이면 true, 아니면 false 를 반환하는 함수
      */
-    constructor(type = "MAX"){
-        if (!["MAX", "MIN"].includes(type.toUpperCase())) {
-            throw new Error("Parameter type must be 'MAX' or 'MIN'.");
+    constructor(type = "MAX", comparator){
+        if (!["MAX", "MIN", "CUSTOM"].includes(type.toUpperCase())) {
+            throw new Error("Parameter type must be 'MAX' or 'MIN' or 'CUSTOM'.");
+        }
+        if (type === 'CUSTOM') {
+            if (!comparator) throw new Error("Parameter comparator is needed.");
+            if (typeof comparator !== "function") throw new Error("Parameter comparator must be function.");
         }
         this.type = type.toUpperCase();
+        this.comparator = comparator;
         this.heapArray = [];
     }
 
@@ -50,10 +56,9 @@ class Heap {
      * @returns {boolean} 교환 필요 여부
      */
     shouldSwap(parent, child) {
-        const isMaxHeap = this.type === "MAX";
-        return isMaxHeap ? 
-            this.heapArray[parent] < this.heapArray[child] : 
-            this.heapArray[parent] > this.heapArray[child];
+        if (this.type === "MAX") return this.heapArray[parent] < this.heapArray[child];
+        else if (this.type === "MIN") return this.heapArray[parent] > this.heapArray[child];
+        else return this.comparator(this.heapArray[parent], this.heapArray[child]);
     }
 
     /**
@@ -103,11 +108,11 @@ class Heap {
 
             // 오른쪽 자식이 존재하면 두 자식 중 교환할 노드 선택
             if (rightChild < heapSize) {
-                const isMax = this.type === "MAX";
-                const pickLeft = isMax ? 
-                this.heapArray[leftChild] >= this.heapArray[rightChild] :
-                this.heapArray[leftChild] <= this.heapArray[rightChild]
-                swappingChild = pickLeft ? leftChild : rightChild;
+                let pickRight;
+                if (this.type === "MAX") pickRight = this.heapArray[leftChild] < this.heapArray[rightChild];
+                else if (this.type === "MIN") pickRight = this.heapArray[leftChild] > this.heapArray[rightChild];
+                else pickRight = this.comparator(this.heapArray[leftChild], this.heapArray[rightChild]);
+                swappingChild = pickRight ? rightChild : leftChild;
             }
             
             if (!this.shouldSwap(parent, swappingChild)) break;
